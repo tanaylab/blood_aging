@@ -21,17 +21,7 @@ for ipynb_path in [
         f.write(fixed_ipynb_contents)
 
 
-mds_dir_paths_file_path = 'code/mds/mds_in_out_dir_paths.py'
-print(f'quick and dirty fix of a path in {mds_dir_paths_file_path}')
-with open(mds_dir_paths_file_path) as f:
-    file_contents = f.read()
-fixed_file_contents = file_contents.replace("/home/orenmil/raid/mds/240801_standalone_blood_aging", curr_dir_path)
-with open(mds_dir_paths_file_path, 'w') as f:
-    f.write(fixed_file_contents)
-
-
 aws_bucket_fig4_dir_path = sys.argv[1]
-
 for source_path, dest_path in [
     (os.path.join(aws_bucket_fig4_dir_path, 'ult_mds_cells.h5ad'), 'output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_mds_cyto_normal_excluding_atlas/cells_with_metacell_attrs.h5ad'),
     (os.path.join(aws_bucket_fig4_dir_path, 'ult_mds_metacells.h5ad'), 'output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_mds_cyto_normal_excluding_atlas/metacells_with_projection.h5ad'),
