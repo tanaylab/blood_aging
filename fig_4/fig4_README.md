@@ -2,30 +2,14 @@ These files produce the results shown in figure 4, focusing on applications of t
 <br/><br/>
 
 Setup and run order:
-1. Create a conda environment using `blood_aging/fig_4/blood_aging_conda_spec_file.txt`.
-2. pip install libraries, see below.
-3. copy large files from our AWS bucket as described below.
-4. generate_donor_features_and_estimate_karyotype.ipynb
-5. generate_combined_illumina_ultima_feature_data.ipynb
-6. mds_xgboost_classification.ipynb
-7. generate_blood_aging_paper_figs_and_tables.ipynb
-<br/><br/>
-
-pip install command:
-```console
-$ pip install metacells rpy2 numpy scipy scikit-learn statsmodels seaborn biopython openpyxl ipykernel notebook scikit-learn-intelex threadpoolctl ipympl adjustText ruptures xgboost shap ipython
-```
-<br/><br/>
-For the code to run, you have to download some large files from our AWS bucket and move them to the expected paths, e.g. using:
-```console
-$ cp blood_aging_aws_bucket/fig4/ult_mds_cells.h5ad blood_aging/output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_mds_cyto_normal_excluding_atlas/cells_with_metacell_attrs.h5ad
-$ cp blood_aging_aws_bucket/fig4/ult_mds_metacells.h5ad blood_aging/output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_mds_cyto_normal_excluding_atlas/metacells_with_projection.h5ad
-$ cp blood_aging_aws_bucket/fig4/illu_mds_cells.h5ad blood_aging/output_and_given_intermediate_output/240618_pb_illu_mds_cytopenia_normal/intermediate_output/mc_models/final_mds_cyto_normal_excluding_atlas/cells_with_metacell_attrs.h5ad
-$ cp blood_aging_aws_bucket/fig4/illu_mds_metacells.h5ad blood_aging/output_and_given_intermediate_output/240618_pb_illu_mds_cytopenia_normal/intermediate_output/mc_models/final_mds_cyto_normal_excluding_atlas/metacells_with_projection.h5ad
-$ cp blood_aging_aws_bucket/fig4/illu_ref_cells.h5ad blood_aging/output_and_given_intermediate_output/240618_pb_illu_mds_cytopenia_normal/intermediate_output/mc_models/final_normal_pb_atlas/240626_cHSPC_79_normal_illu_atlas_c.h5ad
-$ cp blood_aging_aws_bucket/fig4/illu_ref_metacells.h5ad blood_aging/output_and_given_intermediate_output/240618_pb_illu_mds_cytopenia_normal/intermediate_output/mc_models/final_normal_pb_atlas/240626_cHSPC_79_normal_illu_atlas_mc.h5ad
-$ cp blood_aging_aws_bucket/fig4/genes.gtf blood_aging/input/human_genome_files/genes.gtf
-$ cp blood_aging_aws_bucket/fig4/genome.fa blood_aging/input/human_genome_files/genome.fa
-```
-
+1. Create and activate a conda environment using `blood_aging/fig_4/blood_aging_conda_spec_file.txt`.
+2. `pip install metacells rpy2 numpy scipy scikit-learn statsmodels seaborn biopython openpyxl ipykernel notebook scikit-learn-intelex threadpoolctl ipympl adjustText ruptures xgboost shap ipython`
+3. Download required (large) files from our AWS bucket.
+4. Download this repository into a location with at least 50G free storage space.
+5. `cd blood_aging/fig_4` (i.e., fig_4 directory in the local copy of this repository)
+6. `python setup.py path_to_downloaded_aws_bucket_fig_4` (this does some quick and dirty path fixing, and also copies the downloaded large files (required for Figure 4 analysis) into the expected locations)
+7. `code/generate_donor_features_and_estimate_karyotype.ipynb`
+8. `code/generate_combined_illumina_ultima_feature_data.ipynb`
+9. `code/mds_xgboost_classification.ipynb`
+10. `code/generate_blood_aging_paper_figs_and_tables.ipynb`
 
