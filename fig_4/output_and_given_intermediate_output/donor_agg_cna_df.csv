@@ -1,0 +1,24 @@
+donor_id,exp_name,ipssr_cytogenetic_risk_group,has_del_17_or_del_17p,has_del_7_or_del_7q,has_del_5q,cna_count
+G8,all,Good,False,False,False,1
+N186,all,Very Poor,True,False,True,9
+N187,all,Good,False,False,True,2
+N191,demux_28_11_21_1,Very Poor,True,True,True,6
+N191,demux_n_04_12_23_1,Good,False,False,True,1
+N200,demux_10_01_22_1,Poor,False,False,True,3
+N200,demux_11_04_21_2,Poor,False,False,True,3
+N200,demux_11_04_21_2_illumina,Poor,False,False,True,3
+N200,demux_26_03_23_1,Poor,False,False,True,3
+N201,all,Good,False,False,True,1
+N203,all,Intermediate,False,False,False,1
+N205,all,Very Poor,False,False,False,7
+N211,demux_16_01_22_1,Good,False,False,True,1
+N212,all,Good,False,False,True,2
+N227,all,Intermediate,False,True,False,2
+N280,demux_06_11_22_1,Poor,False,True,False,1
+N280,demux_n_15_08_23_2,Poor,False,True,False,1
+N367,all,Intermediate,False,False,False,1
+N369,all,Good,False,False,False,1
+N376,all,Poor,False,True,False,2
+N403,all,Good,False,True,True,2
+N405,all,Intermediate,False,False,False,1
+N48,demux_03_11_21_1,Intermediate,False,False,False,1
