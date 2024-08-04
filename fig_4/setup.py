@@ -15,7 +15,7 @@ for ipynb_path in [
 ]:
     with open(ipynb_path) as f:
         ipynb_contents = f.read()
-    fixed_ipynb_contents = ipynb_contents.replace("os.chdir('/home/orenmil/raid/mds/240801_standalone_blood_aging/code')", f"os.chdir('{curr_dir_path}/code')")
+    fixed_ipynb_contents = ipynb_contents.replace("os.chdir('dummy_to_replace_with_blood_aging_dir_path/code')", f"os.chdir('{curr_dir_path}/code')")
 
     with open(ipynb_path, 'w') as f:
         f.write(fixed_ipynb_contents)
