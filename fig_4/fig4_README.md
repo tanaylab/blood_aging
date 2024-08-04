@@ -1,11 +1,11 @@
 These files produce the results shown in figure 4, focusing on applications of the cHSPC reference model (described in figures 1-3) to diagnostics.
 
 Run order:
-0. copy large files from our AWS bucket as described below.
-1. generate_donor_features_and_estimate_karyotype.ipynb
-2. generate_combined_illumina_ultima_feature_data.ipynb
-3. mds_xgboost_classification.ipynb
-4. generate_blood_aging_paper_figs_and_tables.ipynb
+1. copy large files from our AWS bucket as described below.
+2. generate_donor_features_and_estimate_karyotype.ipynb
+3. generate_combined_illumina_ultima_feature_data.ipynb
+4. mds_xgboost_classification.ipynb
+5. generate_blood_aging_paper_figs_and_tables.ipynb
 
 For the code to run, you have to download some large files from our AWS bucket and move them to the expected paths, e.g. using:
 ```console
