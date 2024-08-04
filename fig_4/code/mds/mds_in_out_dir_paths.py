@@ -1,6 +1,6 @@
 import os.path
 
-ROOT_DIR_PATH = '.'
+ROOT_DIR_PATH = '..'
 
 OUTPUT_ROOT_DIR_PATH = os.path.join(ROOT_DIR_PATH, 'output_and_given_intermediate_output')
 
