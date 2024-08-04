@@ -1,6 +1,6 @@
 import os.path
 
-ROOT_DIR_PATH = '/home/orenmil/raid/mds/240801_standalone_blood_aging'
+ROOT_DIR_PATH = '.'
 
 OUTPUT_ROOT_DIR_PATH = os.path.join(ROOT_DIR_PATH, 'output_and_given_intermediate_output')
 
