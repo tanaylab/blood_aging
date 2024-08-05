@@ -3,7 +3,7 @@ These files produce the results shown in figure 4, focusing on applications of t
 
 Setup and run order (we used a CentOS Linux 7 machine):
 1. Create and activate a conda environment using `blood_aging/fig_4/blood_aging_conda_spec_file.txt`.
-2. `pip install metacells rpy2 numpy scipy scikit-learn statsmodels seaborn biopython openpyxl ipykernel notebook scikit-learn-intelex threadpoolctl ipympl adjustText ruptures xgboost shap ipython`
+2. `pip install -r blood_aging/fig_4/blood_aging_pip_requirements.txt`
 3. Download required (large) files from our AWS bucket.
 4. Download this repository into a location with at least 50G free storage space.
 5. `cd blood_aging/fig_4` (i.e., fig_4 directory in the local copy of this repository)
