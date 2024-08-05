@@ -1,6 +1,8 @@
 import os.path
 
-ROOT_DIR_PATH = '..'
+curr_path = os.getcwd()
+assert curr_path.endswith('/code')
+ROOT_DIR_PATH = os.path.dirname(curr_path)
 
 OUTPUT_ROOT_DIR_PATH = os.path.join(ROOT_DIR_PATH, 'output_and_given_intermediate_output')
 
