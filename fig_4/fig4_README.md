@@ -1,7 +1,7 @@
 These files produce the results shown in figure 4, focusing on applications of the cHSPC reference model (described in figures 1-3) to diagnostics.
 <br/><br/>
 
-Setup and run order:
+Setup and run order (we used a CentOS Linux 7 machine):
 1. Create and activate a conda environment using `blood_aging/fig_4/blood_aging_conda_spec_file.txt`.
 2. `pip install metacells rpy2 numpy scipy scikit-learn statsmodels seaborn biopython openpyxl ipykernel notebook scikit-learn-intelex threadpoolctl ipympl adjustText ruptures xgboost shap ipython`
 3. Download required (large) files from our AWS bucket.
