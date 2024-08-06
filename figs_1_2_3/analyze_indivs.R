@@ -566,8 +566,8 @@ clinical.vs.cell.type.freq <- function(indiv.to.used.samp.fil, samp.ctype.tbl, a
 }
 
 get.mutations.new <- function(indiv.to.used.samp, indiv.id.map) {
-  arch3.muts.path = file.path(MUTATION.FILES.DIR, 'ARCH3 for manuscript final.csv')
-  arch4.muts.path = file.path(MUTATION.FILES.DIR, 'ARCH4 for manuscript final.csv')
+  arch3.muts.path = file.path(MUTATION.FILES.DIR, 'arch3.csv')
+  arch4.muts.path = file.path(MUTATION.FILES.DIR, 'arch4.csv')
   arch3.muts = read.csv(arch3.muts.path, stringsAsFactors=F)
   arch4.muts = read.csv(arch4.muts.path, stringsAsFactors=F)
 
