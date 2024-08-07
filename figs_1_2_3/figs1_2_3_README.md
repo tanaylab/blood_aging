@@ -33,7 +33,7 @@ AWS files:
 - bm_palantir_ref_cells.h5ad - UMI matrix and cell metadata for CD34 bone marrow cells from Setty et al. 2019 (Palantir method paper).
 - bm_palantir_ref_metacells.h5ad - metacells model for the cells from bm_palantir_ref_cells.h5ad.
 
-Github files:
+Files found in Github (under figs_1_2_3/input in this repository):
 - sex_genes - list of genes that are strongly differentially expressed between the sexes.
 - tfs.txt - list of transcription factors.
 - bm_colors.csv - colors used to display cell types in the bone marrow.
