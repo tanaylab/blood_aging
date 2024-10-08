@@ -39,20 +39,21 @@ fig2 <- function() {
   all.females = all.indivs[sexes[all.indivs] == 'female']
   indivs.cols = ifelse(is.male[all.indivs], 'lightgreen', '#FFD580')
 
-  # edf 
+  # edf  4A, 4B
   de.between.indivs.analysis(our.cdata, our.mdata, our.annotation, our.assign, indiv.to.used.samp, cell.to.samp, fig.dir=fig.dir)
 
-  # a-b
   # individuals for which cellranger cut some cells with low number of UMIs, potentially lowering their fraction of CLPs
   # (which have a lower number of UMIs)
   indiv.to.used.samp.fil = indiv.to.used.samp[!(names(indiv.to.used.samp) %in% c('N288', 'N290', 'N365'))]
 
+  # fig 2B
   plot.cell.type.freqs(our.assign, our.annotation, our.legc, cell.to.samp, indiv.to.used.samp.fil, fig.dir=fig.dir)
 
   # main trajectory analysis
+  # fig 2D
   plot.main.traj(our.legc, our.annotation, cell.to.samp, indiv.to.used.samp.fil, ages, indivs.cols)
 
-  # edf - biological and technical replicates
+  # biological and technical replicates
   # illumina - ultima technical similarity
   tech.rep.pools = get.tech.rep.pools(our.cdata$X, our.cdata$obs, rownames(our.cdata$obs))
   rep.illum.pool = tech.rep.pools$rep.illum.pool
@@ -60,6 +61,7 @@ fig2 <- function() {
   rep.illum.legc = log2(1e-5 + t(t(rep.illum.pool) / colSums(rep.illum.pool)))
   rep.ultima.legc = log2(1e-5 + t(t(rep.ultima.pool) / colSums(rep.ultima.pool)))
 
+  # edf 7A
   cur.lim = range(c(rep.illum.legc, rep.ultima.legc))
   png(file.path(fig.dir, 'ultima_qc.png'), width=3800, height=950)
   par(mfrow=c(2, 6))
@@ -95,6 +97,7 @@ fig2 <- function() {
   num.cell.df.fil = cbind(data.frame(indiv_id=names(indiv.to.used.samp)), num.cell.df[indiv.to.used.samp,])
   write.csv(num.cell.df.fil, file=file.path(SUPP.TABLE.DIR, 'num_cells_per_ctype.csv'), quote=F, row.names=F)
 
+  # edf 7B
   replicate.fig.dir = file.path(fig.dir, 'replicate_cell_types')
   dir.create(replicate.fig.dir, showWarnings=F)
   for (i in 1:ncol(samp.ctype.tbl.norm)) {
@@ -114,6 +117,7 @@ fig2 <- function() {
   }
 
   # main replicate figures
+  # fig 2C
   for (i in 1:3) {
     cur.name = c('clp', 'mebempe', 'mebempl')[i]
     cur.types = list(c('blue', 'darkblue', '#6E1C71', 'lightblue'), c('brown', 'gold', '#7F9D00'), c('purple', 'red', 'plum', '#EEBB6E'))[[i]]
@@ -127,20 +131,27 @@ fig2 <- function() {
   }
 
   # clinical correlations
+  # fig 2E, fig 3A, fig 3B, fig 3C, edf 8A
   clinical.vs.cell.type.freq(indiv.to.used.samp.fil, samp.ctype.tbl, ages, sexes)
 
   # N122
+  # edf 8B
   analyze.n122(our.assign, our.annotation, our.legc, fig.dir=fig.dir)
 
   # rdw vs clonality in a separate cohort
+  # fig 2F
   fig2.rdw.vs.mut(fig.dir)
 
   # analyzing CD34+ cell frequency in another dataset
+  # fig 3D
   garvan.analysis()
 
   our.cdata.x = our.cdata$X
-  de.analysis(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotation, our.assign, cell.to.samp, indiv.to.used.samp, fig.dir=fig.dir)
+  # fig 3E, fig 3F, fig 3G, fig 3H
+  # edf 8C, edf 8D, edf 8E, edf 8F , edf 8G
+  de.analysis(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotation, our.assign, cell.to.samp, indiv.to.used.samp, indiv.to.used.samp, fig.dir=fig.dir)
 
+  # fig 3I, fig 3J, fig 3K, edf 8H
   sync.analysis(our.annotation, our.assign, our.cdata, our.legc, our.cdata.x, indiv.to.used.samp, cell.to.meas, cell.to.samp, samp.ctype.tbl)
 
   create.supp.tables(our.cdata, our.annotation, our.assign, indiv.to.used.samp)
@@ -209,6 +220,7 @@ plot.main.traj <- function(our.legc, our.annotation, cell.to.samp, indiv.to.used
   #pheatmap(t(pmax(pmin(freq.tbl.relative[,cur.samps.ord], 3), -3))[,15:1], breaks=seq(-3, 3, length.out=length(shades)), 
   #         col=shades, cluster_cols=F, cluster_rows=F, annotation_row=tmp.df, annotation_colors=list(samps_cols=tmp.cols, age=age.cols))
   shades = colorRampPalette(c("darkblue", "blue", "white",'red', "darkred"))(101)
+  # fig 2D bottom
   pheatmap(t(pmax(pmin(freq.tbl.relative[,cur.samps.ord], 1), -1))[,15:1], breaks=seq(-1, 1, length.out=length(shades)), 
            col=shades, cluster_cols=F, cluster_rows=F, annotation_row=tmp.df, annotation_colors=list(samps_cols=tmp.cols, age=age.cols, freq_cls=cls.cols),
 	   height=14, width=7.5, filename=file.path(fig.dir, 'freq_heatmap.png'))
@@ -225,6 +237,7 @@ plot.main.traj <- function(our.legc, our.annotation, cell.to.samp, indiv.to.used
   png(file.path(fig.dir, 'selected_indivs_freq.png'), width=7000, height=600)
   #par(mfrow=c(2, 3), mar=c(6, 2, 2, 2))
   par(mfrow=c(1, 6), mar=c(6, 2, 2, 2))
+  # fig 2D top
   for (i in seq_along(samps.to.plot.alone)) {
     plot(rev(as.numeric(rownames(freq.tbl.norm))), median.freqs, ylim=c(0, 0.2), type='l', lwd=8, main=indivs.to.plot.alone[i], lty='dashed', yaxt='n', xaxt='n', xlab='')
     cur.labels = rep('', 15)
@@ -267,6 +280,7 @@ plot.cell.type.freqs <- function(our.assign, our.annotation, our.legc, cell.to.s
   
   pheatmap::pheatmap(tgs_cor(pat_type_n1, spearman=T), cluster_rows=F, cluster_cols=F, color=colorRampPalette(c("darkblue","white","darkred"))(1000), breaks=c(-1,seq(-0.7,0.7,l=999),1),file=file.path(fig.dir, "pat_type_scor.png"), w=8,h=8)
   
+  # fig 2B
   png(file.path(fig.dir, "pat_type_box.png"), w=700, h=400)
   boxplot(log10(pat_type_n1+1e-2),las=2,col=colnames(pat_type_n1), boxwex=0.8, lwd=2)
   dev.off()
@@ -350,6 +364,7 @@ de.between.indivs.analysis <- function(our.cdata, our.mdata, our.annotation, our
     }
     shades = colorRampPalette(c("darkblue", "blue", "white","red", "darkred"))(100)
     shades[40:60] = 'white'
+    # edf 4A, 4B
     pheatmap(pmax(pmin(tmp.diff[diff.genes.no.sex,], 3), -3), col=shades, breaks=seq(-3, 3, length.out=length(shades) + 1), filename=file.path(fig.dir, sprintf('de_screen_%s.png', i)), height=10, width=5)
   }
 }
@@ -465,6 +480,7 @@ clinical.vs.cell.type.freq <- function(indiv.to.used.samp.fil, samp.ctype.tbl, a
   pat_type_n1 = samp.ctype.tbl.norm
 
   # all samples
+  # fig 2E
   #par(mfrow=c(4, 5))
   cur.dir = file.path(fig.dir, 'cbc_all')
   dir.create(cur.dir, showWarnings=F)
@@ -507,6 +523,7 @@ clinical.vs.cell.type.freq <- function(indiv.to.used.samp.fil, samp.ctype.tbl, a
   clp.fracs = rowSums(samp.ctype.tbl.norm[sel.samps, c('blue', 'darkblue', 'lightblue', '#6E1C71')])
   clp.fracs.splitted = split(clp.fracs, indiv.to.vaf[used.samp.to.indiv[sel.samps]] > 0)
   print(wilcox.test(clp.fracs.splitted[[1]], clp.fracs.splitted[[2]]))
+  # edf 8A
   png(file.path(fig.dir, 'clp_mut_boxplot.png'), width=300, height=600)
   boxplot(clp.fracs.splitted, lwd=3)
   dev.off()
@@ -536,6 +553,7 @@ clinical.vs.cell.type.freq <- function(indiv.to.used.samp.fil, samp.ctype.tbl, a
   print(kruskal.test(cur.clp.list))
   print('kruskal mebemp')
   print(kruskal.test(cur.mebemp.list))
+  # fig 3A
   png(file.path(fig.dir, 'age_sex_clp_box.png'), height=800, width=400)
   boxplot(cur.clp.list, col=tmp.cols, lwd=3)
   dev.off()
@@ -547,6 +565,7 @@ clinical.vs.cell.type.freq <- function(indiv.to.used.samp.fil, samp.ctype.tbl, a
   mebempl.mpp.ratio.list = list(mebempl.mpp.ratio[tmp.young.males], mebempl.mpp.ratio[tmp.young.females], mebempl.mpp.ratio[tmp.old.males], mebempl.mpp.ratio[tmp.old.females])
   print('kruskal mebempl mpp ratio')
   print(kruskal.test(mebempl.mpp.ratio.list))
+  # fig 3B
   png(file.path(fig.dir, 'age_sex_mebempl_mpp_ratio_box.png'), height=800, width=400)
   boxplot(mebempl.mpp.ratio.list, col=tmp.cols, lwd=3)
   dev.off()
@@ -555,6 +574,7 @@ clinical.vs.cell.type.freq <- function(indiv.to.used.samp.fil, samp.ctype.tbl, a
   cur.hsc.list = list(hsc.freqs[tmp.young.males], hsc.freqs[tmp.young.females], hsc.freqs[tmp.old.males], hsc.freqs[tmp.old.females])
   print('kruskal hsc')
   print(kruskal.test(cur.hsc.list))
+  # fig 3C
   png(file.path(fig.dir, 'age_sex_hsc_box.png'), height=800, width=400)
   boxplot(cur.hsc.list, col=tmp.cols, lwd=3)
   dev.off()
@@ -709,6 +729,7 @@ fig2.rdw.vs.mut <- function(fig.dir=BASE.FIG.DIR) {
   all.muts.df$med_vaf = mut.id.to.vaf[all.muts.df$mut_id]
   all.muts.df.fil = all.muts.df[!duplicated(all.muts.df$mut_id),]
 
+  # fig 2F
   mut.rdws = unique(all.muts.df.fil$indiv[all.muts.df.fil$cohort == 'RDW'])
   mut.controls = unique(all.muts.df.fil$indiv[all.muts.df.fil$cohort == 'Control'])
   indiv.gene.id = paste0(all.muts.df.fil$indiv, '_', all.muts.df.fil$gene)
@@ -747,6 +768,7 @@ analyze.n122 <- function(our.assign, our.annotation, our.legc, fig.dir=BASE.FIG.
   wt.mut.fil.tbl = rbind(table(our.annotation.factor[our.assign[mut.indiv.cells.fil]]), table(our.annotation.factor[our.assign[wt.indiv.cells.fil]]))[,cur.used.ctypes.ord]
   wt.mut.fil.tbl.norm = wt.mut.fil.tbl / rowSums(wt.mut.fil.tbl)
 
+  # edf 8B
   tmp.clp.types = c('blue', 'darkblue', 'lightblue', '#6E1C71')
   tmp.non.clp.types = setdiff(cur.used.ctypes.ord, tmp.clp.types)
   print(fisher.test(rbind(rowSums(wt.mut.fil.tbl[,tmp.clp.types]), rowSums(wt.mut.fil.tbl[,tmp.non.clp.types]))))
@@ -818,6 +840,7 @@ sync.analysis <- function(our.annotation, our.assign, our.cdata, our.legc, our.c
     return(ret.mat)
   }
 
+  # fig 3I
   set.seed(42)
   sync.fig.dir = file.path(fig.dir, 'sync_indiv_figs')
   dir.create(sync.fig.dir, showWarnings=F)
@@ -843,10 +866,12 @@ sync.analysis <- function(our.annotation, our.assign, our.cdata, our.legc, our.c
 
   print(kruskal.test(cbc.new[used.males,"MCV"], g=sync.scores[used.male.samps]> .2368))
 
+  # fig 3J
   png(file.path(fig.dir, 'sync_rbc_mcv.png'), width=500, height=500)
   plot(cbc.new[used.males,"RBC"]*10, cbc.new[used.males,"MCV"], pch=19, col=ifelse(sync.scores[used.male.samps]> .2368,"red","black"),cex=2)
   dev.off()
 
+  # fig 3K
   samp.ctype.tbl.norm = samp.ctype.tbl / rowSums(samp.ctype.tbl)
   png(file.path(fig.dir, 'sync_vs_cell_type_freq.png'), height=750, width=1000)
   temp.ret = permut_test(used.male.samps, sync.scores[used.male.samps], 'sync', samp.ctype.tbl.norm, win=3, num.perm=1e4)
@@ -869,6 +894,7 @@ sync.analysis <- function(our.annotation, our.assign, our.cdata, our.legc, our.c
 
   cur.lim = range(c(sync.scores.samps[unlist(bio.reps[,1])], sync.scores.samps[unlist(bio.reps[,2])], 
                     sync.scores.meas[unlist(tech.reps[,1])], sync.scores.meas[unlist(tech.reps[,2])]))
+  # edf 8H
   png(file.path(fig.dir, 'sync_bio_reps.png'), width=600, height=600)
   plot(sync.scores.samps[unlist(bio.reps[,1])], sync.scores.samps[unlist(bio.reps[,2])], cex=3, pch=19, xlim=cur.lim, ylim=cur.lim)
   abline(b=1, a=0, col=2, lwd=3)
@@ -935,7 +961,7 @@ get.meas.de.expression <- function(our.cdata, our.cdata.x, our.annotation, our.a
   return(cur.exp.pooled.traj.norm.fixed)
 }
 
-de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotation, our.assign, cell.to.samp, indiv.to.used.samp, fig.dir=BASE.FIG.DIR) {
+de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotation, our.assign, cell.to.samp, indiv.to.used.samp, indiv.to.used.samp.fil, fig.dir=BASE.FIG.DIR) {
   all.exp.pooled = list()
   all.exp.pooled.traj.norm = list()
   all.exp.pooled.traj.norm.fixed = list()
@@ -1116,6 +1142,7 @@ de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotat
       #best_model_pred = predict(best_model, s = best_lambda, newx = t(cur.exp.pooled.traj.norm.fixed2[,j]))[,1]
       return(best_model_pred)
     })
+    # fig 3E, edf 8C
     png(file.path(fig.dir, c('nested_age_norm_exp_clock_unpooled_loocv_mebemp.png', 'nested_age_norm_exp_clock_unpooled_loocv_clp.png')[i]))
     tmp.lim.nested = range(c(ages[cur.indivs], tmp.preds.nested))
     #tmp.cor = cor(ages[cur.indivs], tmp.preds, method='spearman')
@@ -1204,6 +1231,7 @@ de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotat
     pheatmap(cur.gene.cor.trim2[pheatmap.ret$tree_row$ord, pheatmap.ret$tree_col$ord], breaks=seq(-1, 1, length.out=100), color=shades, 
                             show_colnames=T, show_rownames=F, cluster_rows=F, cluster_cols=F,
                             border_color=F, fontsize=2, filename=file.path(fig.dir, c('mebemp_modules_heatmap_with_names_fil.png', 'clp_modules_heatmap_with_names_fil.png')[i]), width=10.1, height=5)
+    # fig 3F
     pheatmap(cur.gene.cor.trim2[pheatmap.ret$tree_row$ord, pheatmap.ret$tree_col$ord], breaks=seq(-1, 1, length.out=100), color=shades, 
                             show_colnames=F, show_rownames=F, cluster_rows=F, cluster_cols=F,
                             border_color=F, fontsize=7, filename=file.path(fig.dir, c('mebemp_modules_heatmap_fil.png', 'clp_modules_heatmap_fil.png')[i]), width=5.1, height=5)
@@ -1238,6 +1266,7 @@ de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotat
   lmna.clp.scores = colMeans(cur.exp.pooled.traj.norm.fixed.clp[lmna.mod.fil, common.samps])
   lmna.mebemp.scores = colMeans(cur.exp.pooled.traj.norm.fixed.mebemp[lmna.mod.fil, common.samps])
   cols.for.lmna.scatter = ifelse(sexes[names(indiv.to.used.samp)] == 'male', 'blue', 'red')
+  # fig 3G
   png(file.path(fig.dir, 'lmna_mebemp_vs_clp_scores.png'))
   tmp.lim = range(c(lmna.mebemp.scores, lmna.clp.scores))
   plot(lmna.mebemp.scores, lmna.clp.scores, pch=21, bg=cols.for.lmna.scatter[samp.to.indiv[common.samps]], cex=2.5, xlim=tmp.lim, ylim=tmp.lim)
@@ -1256,13 +1285,14 @@ de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotat
   mebemp.tmp.old.females = mebemp.samps[ages[samp.to.indiv[mebemp.samps]] > 60 & sexes[samp.to.indiv[mebemp.samps]] == 'female']
 
 
-  lmna.mebemp.scores.list = list(lmna.mebemp.scores[c(mebemp.tmp.young.males, mebemp.tmp.young.males)], 
+  lmna.mebemp.scores.list = list(lmna.mebemp.scores[c(mebemp.tmp.young.males, mebemp.tmp.young.females)], 
                                  lmna.mebemp.scores[c(mebemp.tmp.old.males, mebemp.tmp.old.females)])
   lmna.clp.scores.list = list(lmna.clp.scores[c(clp.tmp.young.males, clp.tmp.young.females)], lmna.clp.scores[c(clp.tmp.old.males, clp.tmp.old.females)])
   print('kruskal clp')
   print(kruskal.test(lmna.clp.scores.list))
   print('kruskal mebemp')
   print(kruskal.test(lmna.mebemp.scores.list))
+  # fig 3H
   png(file.path(fig.dir, 'age_sex_lmna_clp_box.png'), height=800, width=400)
   boxplot(lmna.clp.scores.list, lwd=3)
   dev.off()
@@ -1273,6 +1303,7 @@ de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotat
   cur.used.ctypes = c('purple', 'red', 'plum', '#EEBB6E', "#7F9D00", 'gold', 'brown', "#6E1C71", 'blue', 'darkblue', 'lightblue')
   mcs.for.scatters = names(our.annotation)[our.annotation %in% cur.used.ctypes]
   genes.for.scatters = c('ANXA1', 'TAGLN2', 'AHNAK', 'MYADM', 'TSPAN2', 'VIM')
+  # edf 8D
   png(file.path(fig.dir, 'lmna_gg_scatters.png'), height=1500, width=1100)
   par(mfrow=c(3, 2), mar=c(6, 6, 2, 2))
   for (cur.gene in genes.for.scatters) {
@@ -1281,6 +1312,7 @@ de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotat
   }
   dev.off()
 
+  # edf 8G
   # bio replicates
   is.bio.rep.used.mebemp = all.is.bio.rep.used[[1]]
   is.bio.rep.used.clp = all.is.bio.rep.used[[2]]
@@ -1332,6 +1364,7 @@ de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotat
   #tmp.xvals = c(our.legc['AVP', cur.mebemp.mcs], our.legc['AVP', cur.brown.mcs], -(our.legc['AVP', cur.clp.mcs] - max(our.legc['AVP', cur.clp.mcs])) + max(our.legc['AVP', cur.clp.mcs]))
   #plot(tmp.xvals, mc.lmna.scores[names(tmp.xvals)], pch=21, bg=our.annotation[names(tmp.xvals)])
 
+  # edf 8F
   png(file.path(fig.dir, 'avp_vs_lmna_module.png'), width=1100, height=500)
   par(mfrow=c(1, 2))
   cur.ylim = range(mc.lmna.scores[c(lmna.brown.mcs, lmna.mebemp.mcs, lmna.clp.mcs)])
@@ -1398,6 +1431,7 @@ de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotat
   age.cols = colorRampPalette(c('white', 'grey', 'black'))(66)
   names(age.cols) = 20:85
   #all.pheatmap = pheatmap(t(tmp.mat.smoothed), breaks=seq(-15.5, -13.5, length.out=100), col=shades, cluster_rows=F, cluster_cols=F, 
+  # edf 8E
   all.pheatmap = pheatmap(t(tmp.mat.smoothed), breaks=seq(-15.5, -13.5, length.out=100), col=shades, cluster_rows=F, cluster_cols=F, 
                           annotation_row=tmp.df[colnames(tmp.mat.smoothed),], annotation_colors=list(indivs_cols=tmp.cols, age=age.cols), 
 			  filename=file.path(fig.dir, 'lmna_mod_heatmap.png'), height=12, width=10)
@@ -1426,6 +1460,9 @@ de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotat
 
 
   # and now differential expression
+  indiv.id.map = get.indiv.id.map()
+  indiv.to.vaf = get.indiv.to.vaf(indiv.to.used.samp.fil, indiv.id.map)
+  cbc.new = get.clinical.values.new(indiv.id.map)
   for (i in 1:2) {
     cur.exp.pooled.traj.norm.fixed = all.exp.pooled.traj.norm.fixed[[i]]
 
@@ -1527,7 +1564,7 @@ de.analysis <- function(our.cdata, our.cdata.x, our.mdata, our.legc, our.annotat
 
 }
 
-garvan.analysis <- function() {
+garvan.analysis <- function(fig.dir=BASE.FIG.DIR) {
   garvan.cdata = anndata::read_h5ad(file.path(MODEL.DIR, 'pbmc_garvan_ref_cells.h5ad'))
   garvan.mdata = anndata::read_h5ad(file.path(MODEL.DIR, 'pbmc_garvan_ref_metacells.h5ad'))
   garvan.legc = t(log2(1e-5 + garvan.mdata$X / rowSums(garvan.mdata$X)))
@@ -1544,11 +1581,6 @@ garvan.analysis <- function() {
     stopifnot(all(cur.ages == cur.ages[1]))
     return(cur.ages[1])
   })
-  #png(file.path(fig.dir, 'garvan_cd34.png'), height=500, width=500)
-  #plot(garvan.legc['CD34',], garvan.legc['HLF',], pch=19, cex=1.5)
-  #abline(v=-14.3, lty=2)
-  #abline(h=-14.5, lty=2)
-  #dev.off()
 
   cd34.mcs = paste0('mc', colnames(garvan.legc)[garvan.legc['CD34',] > -14.3])
   set.seed(42)
@@ -1562,20 +1594,41 @@ garvan.analysis <- function() {
   }))
   cell.to.indiv.fil = cell.to.indiv[names(cell.to.indiv) %in% rand.cells]
   cd34.frac.per.decade.test = tapply(names(cell.to.indiv.fil), floor(indiv.to.age[cell.to.indiv.fil] / 10) * 10, function(cur.cells) {
-    binom.test(sum(mc.assign.garvan[cur.cells] %in% cd34.mcs), sum(!(mc.assign.garvan[cur.cells] %in% c('mc-1', 'mc-2'))))
+    print('decade:')
+    print(unique(floor(indiv.to.age[cell.to.indiv.fil[cur.cells]] / 10) * 10))
+    print('number of cells:')
+    print(length(cur.cells))
+    print('number of indivs:')
+    print(length(unique(cell.to.indiv.fil[cur.cells])))
+    #binom.test(sum(mc.assign.garvan[cur.cells] %in% cd34.mcs), sum(!(mc.assign.garvan[cur.cells] %in% c('mc-1', 'mc-2'))))
+    binom.test(sum(mc.assign.garvan[cur.cells] %in% cd34.mcs), length(cur.cells))
   })
   cd34.estimates = sapply(cd34.frac.per.decade.test, function(x) x$estimate)
   cd34.lower.conf = sapply(cd34.frac.per.decade.test, function(x) x$conf.int[1])
   cd34.upper.conf = sapply(cd34.frac.per.decade.test, function(x) x$conf.int[2])
   cd34.ylim = c(0, max(cd34.estimates[1:9], cd34.lower.conf[1:9], cd34.upper.conf[1:9]))
 
+  # fig 3D
   png(file.path(fig.dir, 'garvan_cd34_age.png'), height=800, width=400)
   log2.lim = range(log2(c(cd34.estimates, cd34.lower.conf, cd34.upper.conf)))
   plot(1:9, log2(cd34.estimates[1:9]), pch=19, ylim=log2.lim, cex=3)
   segments(1:9, log2(cd34.lower.conf[1:9]), 1:9, log2(cd34.upper.conf[1:9]), lwd=3)
   dev.off()
 
-
+  # table
+  garvan.indivs = unique(cell.to.indiv)
+  cd34.cells = names(mc.assign.garvan)[mc.assign.garvan %in% cd34.mcs]
+  sampled.cd34.cells = intersect(cd34.cells, names(cell.to.indiv.fil))
+  exported.df = data.frame(indiv_id=garvan.indivs, age=indiv.to.age[garvan.indivs], decade=floor(indiv.to.age[garvan.indivs] / 10) * 10, 
+             num_cells=as.character(table(cell.to.indiv)[garvan.indivs]), 
+             num_cd34_pos_cells=as.character(table(cell.to.indiv[cd34.cells])[garvan.indivs]), 
+	     is_selected=garvan.indivs %in% unique(cell.to.indiv.fil), num_sampled_cells=NA, num_sampled_cd34_pos_cells=NA)
+  exported.df[exported.df$is_selected, 'num_sampled_cells'] = 800
+  exported.df[exported.df$is_selected, 'num_sampled_cd34_pos_cells'] = as.character(table(cell.to.indiv.fil[sampled.cd34.cells])[rownames(exported.df)[exported.df$is_selected]])
+  num.cd34.per.decade = tapply(as.numeric(exported.df[exported.df$is_selected, 'num_sampled_cd34_pos_cells']), exported.df[exported.df$is_selected, 'decade'], sum)
+  num.cells.per.decade = tapply(as.numeric(exported.df[exported.df$is_selected, 'num_sampled_cells']), exported.df[exported.df$is_selected, 'decade'], sum)
+  stopifnot(all(log2(cd34.estimates[1:9]) == log2(num.cd34.per.decade / num.cells.per.decade)))
+  write.csv(exported.df, file=file.path(SUPP.TABLE.DIR, 'sx_1000_indivs_cd34.csv'), quote=F, row.names=F)
 }
 
 create.supp.tables <- function(our.cdata, our.annotation, our.assign, indiv.to.used.samp) {
