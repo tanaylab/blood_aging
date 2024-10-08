@@ -16,6 +16,7 @@ To reproduce the results, you should:
 The code files in this directory are:
 - `analyze_pbmc_model.R` - creates Figure 1 and its corresponding Extended Data Figures and tables.
 - `analyze_indivs.R` - creates Figures 2-3 and their corresponding Extended Data Figures and tables.
+- `utils.R` - some utility functions.
 - `params.R` - parameters file.
 
 The files needed to run the code are listed below.
