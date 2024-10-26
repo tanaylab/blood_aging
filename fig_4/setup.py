@@ -21,7 +21,21 @@ for ipynb_path in [
         f.write(fixed_ipynb_contents)
 
 
+print(f'quick and dirty copying of files from local copy of aws bucket into where the code expects these files to be (sorry for this ugliness!)')
 aws_bucket_fig4_dir_path = sys.argv[1]
+
+for source_dir_path, dest_dir_path in [
+    (os.path.join(aws_bucket_fig4_dir_path, 'N211_ad_files', 'final_only_N211_only_demux_16_01_22_1'), 'output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_only_N211_only_demux_16_01_22_1'),
+    (os.path.join(aws_bucket_fig4_dir_path, 'N211_ad_files', 'final_only_N211_only_demux_26_03_23_1'), 'output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_only_N211_only_demux_26_03_23_1'),
+    (os.path.join(aws_bucket_fig4_dir_path, 'N180_ad_files', 'final_only_N200_only_demux_26_03_23_1'), 'output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_only_N200_only_demux_26_03_23_1'),
+    (os.path.join(aws_bucket_fig4_dir_path, 'N180_ad_files', 'final_only_N200_only_demux_11_04_21_2'), 'output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_only_N200_only_demux_11_04_21_2'),
+    (os.path.join(aws_bucket_fig4_dir_path, 'N180_ad_files', 'final_only_N200_only_demux_10_01_22_1'), 'output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_only_N200_only_demux_10_01_22_1'),
+]:
+    print(f'start copying {source_dir_path}')
+    dest_containing_dir_path = os.path.dirname(dest_dir_path)
+    pathlib.Path(dest_containing_dir_path).mkdir(parents=True, exist_ok=True)
+    shutil.copytree(source_dir_path, dest_dir_path)
+
 for source_path, dest_path in [
     (os.path.join(aws_bucket_fig4_dir_path, 'ult_mds_cells.h5ad'), 'output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_mds_cyto_normal_excluding_atlas/cells_with_metacell_attrs.h5ad'),
     (os.path.join(aws_bucket_fig4_dir_path, 'ult_mds_metacells.h5ad'), 'output_and_given_intermediate_output/240623_pb_ult_mds_cytopenia_normal/intermediate_output/mc_models/final_mds_cyto_normal_excluding_atlas/metacells_with_projection.h5ad'),
