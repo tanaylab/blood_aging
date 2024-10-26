@@ -12,21 +12,21 @@ FIRST_ARCH4_DATE = '03.11.21'
 FIRST_ARCH4_DATE_AS_DATE = pd.to_datetime(FIRST_ARCH4_DATE, format='%d.%m.%y', errors='raise')
 
 CBC_COL_TO_PUBLISH_COL = {
-    'Basophils#': 'Basophils#',
+    'Basophils#': 'Basophils (10^3/microliter)',
     'Basophils%': 'Basophils%',
-    'Eosinophils#': 'Eosinophils#',
+    'Eosinophils#': 'Eosinophils (10^3/microliter)',
     'Eosinophils%': 'Eosinophils%',
     'Hematocrit (%)': 'Hematocrit (%)',
     'Hemoglobin (g/dl)': 'Hemoglobin (g/dl)',
-    'Lympho#': 'Lymphocytes#',
+    'Lympho#': 'Lymphocytes (10^3/microliter)',
     'Lympho%': 'Lymphocytes%',
     'MCH (pg)': 'MCH (pg)',
     'MCHC (g/dl)': 'MCHC (g/dl)',
     'MCV (fL)': 'MCV (fL)',
     'MPV (fL)': 'MPV (fL)',
-    'Mono#': 'Monocytes#',
+    'Mono#': 'Monocytes (10^3/microliter)',
     'Mono%': 'Monocytes%',
-    'Neutro#': 'Neutrophils#',
+    'Neutro#': 'Neutrophils (10^3/microliter)',
     'Neutro%': 'Neutrophils%',
     'Platelets (10^3/microliter)': 'Platelets (10^3/microliter)',
     'RBC (10^6/microliter)': 'RBC (10^6/microliter)',
@@ -729,6 +729,13 @@ def add_donor_closest_cbc_cols(df):
     orig_df_len = len(df)
     cbc_df = pd.read_csv(get_sc_rna_seq_preprocessing_params()['donor_table_paths']['minimal_cbc_df_csv'])
     df = df.merge(cbc_df.drop(columns='exp_date'), on='donor_id', how='left')
+    
+    # IIUC, we use 'CBC dates' and cbc_date in other places, is because cbc_date didn't exist in my original code. (i just wanted to avoid changing the code where not necessary)
+    assert (cbc_df['cbc_date'].isna() == cbc_df['CBC dates'].isna()).all()
+    assert (
+        (pd.to_datetime(cbc_df['CBC dates'], format='%d.%m.%y', errors='raise') == pd.to_datetime(cbc_df['cbc_date']))
+        | cbc_df['cbc_date'].isna()
+    ).all()
     df['cbc_10x_sample_days_diff'] = (
         generic_utils.convert_two_dot_two_dot_two_date_col_to_days_since_ref_date(df, 'CBC dates', (2020, 1, 1), skip_na_vals=True) -
         generic_utils.convert_two_dot_two_dot_two_date_col_to_days_since_ref_date(df, 'bleeding_date', (2020, 1, 1), skip_na_vals=False)

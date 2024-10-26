@@ -65,6 +65,20 @@ SPECIFIC_EXP_DONORS_TO_EXCLUDE_NAME_PAIRS = [
 ]
 
 
+# inferred from generate_blood_aging_paper_figs_and_tables.ipynb fig 4B
+only_mpp_nd_ids_without_suffix = ['N405', 'N421']
+high_gmp_nd_ids_without_suffix = ['G12', 'N235_2', 'N367', 'N281_1', 'N250', 'N413', 'N403']
+high_bemp_nd_ids_without_suffix = ['N151', 'N192_1']
+high_clp_nd_ids_without_suffix = ['N387', 'N204_2']
+high_clp_low_mebemp_nd_ids_without_suffix = ['N203', 'N241', 'N283']
+comp_class_to_nd_ids_without_suffix = {
+    'only HSC/MPP': only_mpp_nd_ids_without_suffix,
+    'high GMP': high_gmp_nd_ids_without_suffix,
+    'high BEMP': high_bemp_nd_ids_without_suffix,
+    'high CLP': high_clp_nd_ids_without_suffix,
+    'high CLP low MEBEMP': high_clp_low_mebemp_nd_ids_without_suffix,
+}
+normal_mean_nn_dist_without_atlas_high_quantile_val = 1.4363960365727024 # calculated in generate_blood_aging_paper_figs_and_tables.ipynb
 
 # NOTE: https://www.ensembl.info/2021/03/15/retirement-of-clone-based-gene-names/: "Human, mouse, rat and zebrafish genes without an official gene symbol, have been conventionally named after BAC clones in Ensembl. We plan to remove these names in Ensembl release 104 and resort to using the Ensembl gene stable IDs instead, in line with practices adopted for all other vertebrate species". at some point I considered to mark all of these as lateral, but decided against it.
 AC_AND_AL_CLONE_BASED_GENE_NAMES_FILE_PATH = '/dummy/dummy/dummy/tanay_group/mds/AC_and_AL_clone_based_gene_names.txt'
@@ -5633,6 +5647,7 @@ MDS_ANALYSIS_PARAMS = {
         'in_test_set': 'In MDS classification cohort 2',
         'in_blast_vs_clp_e_scatter': 'In Figure 4H',
         'cbc_date': 'CBC date',
+        'follow_up_cbc_date': 'follow up CBC date',
         'gene': 'Gene',
         'CHR': 'Chromosome',
         'POS': 'Position',
@@ -5654,6 +5669,9 @@ MDS_ANALYSIS_PARAMS = {
         'log_c_high_MPP_sig_ERYP': 'log2(high_MPP_sig_ERYP frequency)',
         'log_c_pre-B?': 'log2(pre-B? frequency)',
         'log_c_pro-B?': 'log2(pro-B? frequency)',
+        
+        'log_c_clp_e': 'log2(CLP-E-like frequency)',
+        'fig_4b_group': 'Figure 4B group',
 
         'num_BEMP': 'BEMP cell count (by metacell annotation)',
         'num_EP': 'ERYP cell count (by metacell annotation)',
@@ -5690,6 +5708,14 @@ MDS_ANALYSIS_PARAMS = {
         'seq_platform': 'Sequencing platform',
 
         'manual_comment_for_blood_aging_paper': 'Notes',
+        
+        'follow_up_WBC': 'follow up WBC (10^3/microliter)',
+        'follow_up_HGB': 'follow up Hemoglobin (g/dl)',
+        'follow_up_MCV': 'follow up MCV (fL)',
+        'follow_up_RDW': 'follow up RDW (%)',
+        'follow_up_PLT': 'follow up Platelets (10^3/microliter)',
+        'follow_up_neut': 'follow up Neutrophils (10^3/microliter)',
+        'follow_up_notes': 'Notes',
     },
     'sig_name_to_name_in_paper': {
         'higher_in_dc_than_all_hspcs': 'DC signature',
