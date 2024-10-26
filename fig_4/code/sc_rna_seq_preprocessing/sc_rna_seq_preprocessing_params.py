@@ -134,6 +134,7 @@ SC_RNA_SEQ_PREPROCESSING_PARAMS = {
 
     'blood_sample_id_df_csv_file_path': os.path.join(mds_in_out_dir_paths.EXPERIMENT_METADATA_DIR_PATH, 'blood_sample_id_df.csv'),
     'scrna_exp_id_df_csv_file_path': os.path.join(mds_in_out_dir_paths.EXPERIMENT_METADATA_DIR_PATH, 'scrna_exp_id_df.csv'),
+    'cytopenia_follow_up_xlsx_file_path': os.path.join(mds_in_out_dir_paths.EXPERIMENT_METADATA_DIR_PATH, 'experiment_donor_tables/241009_cytopenia_follow_up_filtered_fixed.xlsx'),
     'experiments_that_orenmil_processed_metadata_df_csv_file_path': os.path.join(mds_in_out_dir_paths.EXPERIMENT_METADATA_DIR_PATH, 'experiments_that_orenmil_processed_metadata.csv'),
     # 'exp_name_and_donor_ids_agg_csv_file_path': os.path.join(mds_in_out_dir_paths.EXPERIMENT_METADATA_DIR_PATH, 'experiment_donor_tables/230521_combined_adjusted_experiment_donors_agg_df.csv'),
 
