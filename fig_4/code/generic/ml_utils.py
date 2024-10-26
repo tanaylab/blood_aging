@@ -330,7 +330,7 @@ def plot_auc(pred_df_or_name_to_pred_df, title_suffix=''):
         # print(tpr, fpr)
         # print(name, pd.DataFrame({'fpr': fpr, 'tpr': tpr}))
         auc = sklearn.metrics.roc_auc_score(pred_df['y'], pred_df['pred_y'])
-        print(auc)
+        print(f'{auc:.3f}')
         if 0:
             roc_df = pd.DataFrame({'fpr': fpr, 'tpr': tpr})
             sb.lineplot(roc_df, x='fpr', y='tpr', ax=ax) # this looks weird for some reason...
@@ -342,7 +342,7 @@ def plot_auc(pred_df_or_name_to_pred_df, title_suffix=''):
     ax.legend()
     ax.set_aspect('equal')
     title_suffix_repr = f'\n{title_suffix}' if title_suffix else ''
-    ax.set_title(f'{", ".join(auc_reprs)}{title_suffix_repr}', fontsize='x-small')
+    ax.set_title(f'{", ".join(auc_reprs)}{title_suffix_repr}', fontsize='xx-small')
     fig.tight_layout()
     return fig, ax
 

@@ -980,41 +980,64 @@ def get_corr_df(
     return corrs
 
 def get_gene_gene_corr_mat_df(
-        mc_ad, genes=None, mc_mask=None, 
+        c_or_mc_ad, genes=None, c_or_mc_mask=None, 
         also_plot_clustermap_and_return_clustermap_obj_and_ordered_gene_names=False,
-        metric='correlation',
+        max_obs_count=int(100e3),
+        c_epsilon_to_add_to_fraction_before_log=C_EPSILON_TO_ADD_TO_FRACTION_BEFORE_LOG,
+        **clustermap_kwargs,
 ):
-    if mc_mask is None:
-        mc_mask = np.full(mc_ad.n_obs, True)
+    ad_is_mc_ad = is_mc_ad(c_or_mc_ad)
     
-    gene_mask = np.full(mc_ad.n_vars, True) if (genes is None) else mc_ad.var_names.isin(genes)
+    if c_or_mc_mask is None:
+        c_or_mc_mask = np.full(c_or_mc_ad.n_obs, True)
+    
+    obs_count = c_or_mc_mask.sum()
+    assert obs_count <= max_obs_count, f'obs_count={obs_count} > max_obs_count={max_obs_count}. increase max_obs_count if you want to proceed.'
+    print(f'obs_count: {obs_count}')
 
-    expr = mc_ad.layers['expr'][np.ix_(mc_mask, gene_mask)]
+    gene_mask = np.full(c_or_mc_ad.n_vars, True) if (genes is None) else c_or_mc_ad.var_names.isin(genes)
+
+    
+    if ad_is_mc_ad:
+        write_expr_and_expr_enrich(c_or_mc_ad)
+        expr = c_or_mc_ad.layers['expr'][np.ix_(c_or_mc_mask, gene_mask)]
+    else:
+        write_downsampled_layer_if_not_exists(c_or_mc_ad)
+        expr = np.log2(
+            (mc.ut.to_numpy_matrix(c_or_mc_ad.layers['downsampled'][np.ix_(c_or_mc_mask, gene_mask)]) / c_or_mc_ad.uns['downsample_samples'])
+            + c_epsilon_to_add_to_fraction_before_log
+        )
     
     corr_mat = mc.ut.corrcoef(mc.ut.to_layout(expr, layout='column_major'), per='column', reproducible=True)
-    gene_names = mc_ad.var_names[gene_mask]
+    gene_names = c_or_mc_ad.var_names[gene_mask]
     corr_mat_df = pd.DataFrame(corr_mat, index=gene_names, columns=gene_names)
 
     if also_plot_clustermap_and_return_clustermap_obj_and_ordered_gene_names:
-        selected_gene_names = sorted(mc_ad.var_names[mc_ad.var['selected_gene']])
-        tick_labels = [x if x in selected_gene_names else f'**{x}' for x in gene_names]
-        
+        if 'selected_gene' in c_or_mc_ad.var.columns:
+            selected_gene_names = sorted(c_or_mc_ad.var_names[c_or_mc_ad.var['selected_gene']])
+            tick_labels = [x if x in selected_gene_names else f'**{x}' for x in gene_names]
+        else:
+            tick_labels = gene_names
+
+        if 'vmin' not in clustermap_kwargs:
+            clustermap_kwargs['vmin'] = -1
+        if 'vmax' not in clustermap_kwargs:
+            clustermap_kwargs['vmax'] = 1
+        if 'cmap' not in clustermap_kwargs:
+            clustermap_kwargs['cmap'] = 'bwr'
+        if 'metric' not in clustermap_kwargs:
+            clustermap_kwargs['metric'] = 'correlation'
         clustermap_obj = sb.clustermap(
             corr_mat_df, 
             xticklabels=tick_labels, 
             yticklabels=tick_labels,
-            cmap='bwr',
-            vmin=-1,
-            vmax=1,
-            metric=metric,
+            **clustermap_kwargs,
         )
         ordered_gene_indices = clustermap_obj.dendrogram_row.reordered_ind
         ordered_gene_names = list(corr_mat_df.index[ordered_gene_indices])
         return corr_mat_df, clustermap_obj, ordered_gene_names
 
     return corr_mat_df
-
-
 
 def get_gene_modules(
         linkage_mat,
