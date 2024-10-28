@@ -6014,6 +6014,8 @@ MDS_ANALYSIS_PARAMS = {
     # 'forbidden_genes_from_nimrod_csv_file_path': '/dummy/dummy/dummy/tanay_group/mds/221117_nimrod_forbidden_blood_aging_genes.txt',
     'gene_batch_kruskal_pvals_from_nimrod_csv_file_path': os.path.join(
         mds_in_out_dir_paths.MISC_INPUT_DIR_PATH, '230309_10x_batch_kruskal_pvals_from_nimrod.csv'),
+    '1k1k_supp_table_by_nimrod_csv_file_path': os.path.join(
+        mds_in_out_dir_paths.MISC_INPUT_DIR_PATH, 's14_1000_indivs_CD34_in_PBMC.csv'),
     
     'extra_lateral_gene_names_when_skipping_mcnoise': [
         # TODO: maybe should always be noisy and lateral, if indeed it might be such droplets rather than ambient noise...

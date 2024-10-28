@@ -1738,9 +1738,9 @@ def estimate_karyo(info_for_karyo, dataset_name, correct_by_gc, stop_after_mc_mo
                 fig_file_name = f'at_least_in_part_{exp_name}__{donor_id}_wanted_{wanted_num_of_genes_in_bin}_genes_in_bin_mc_karyotype_heatmap_{file_path_attr_prefix}{correct_by_gc_repr}.png'
                 clustermap_obj.savefig(os.path.join(out_dir_path, fig_file_name))
         else:
-            print('WARNING: exp_names is None so empty. make sure this makes sense.') 
+            print('WARNING: exp_names is None or empty. make sure this makes sense.') 
             assert re.match(r'final_only_\d+', mc_model_name) 
-            fig_file_name = f'{donor_id}_wanted_{wanted_num_of_genes_in_bin}_genes_in_bin_mc_karyotype_heatmap_{file_path_attr_prefix}.png'
+            fig_file_name = f'{donor_id}_wanted_{wanted_num_of_genes_in_bin}_genes_in_bin_mc_karyotype_heatmap_{file_path_attr_prefix}{correct_by_gc_repr}.png'
         clustermap_obj.savefig(os.path.join(donor_exp_out_dir_path, fig_file_name), dpi=dpi)
         
         plt.close('all')
