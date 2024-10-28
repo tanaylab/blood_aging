@@ -2977,3 +2977,113 @@ def get_py_file_contents_without_regex_removing_comments_with_regex(file_path, c
         raise
     
     return new_file_contents
+
+
+def plot_stripplot_per_group_and_calc_krusk(
+        df, col,
+        group_col,
+        hue_col=None,
+        ordered_group_col_vals=None, 
+        min_group_size=1,
+        min_group_size_for_krusk=3,
+        group_col_vals_to_exclude_from_krusk=None,
+        palette=None,
+        max_hue_val_count=1000,
+        remove_legend=False,
+        showbox=False,
+        showcaps=False,
+        show_whiskers=False,
+        show_median=True,
+        ax=None,
+        no_hue=False,
+        rotate_x_tick_labels=True,
+        **stripplot_kwargs,
+):
+    import seaborn as sb
+    
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(10 if remove_legend else 12, 5))
+    else:
+        fig = ax.get_figure()
+    nan_mask = df[col].isna()
+    if nan_mask.any():
+        print(f'dropping {nan_mask.sum()} rows with nan {col}')
+        df = df[~nan_mask]
+
+    df = df[df[group_col].isin((df[group_col].value_counts() >= min_group_size).loc[lambda x: x].index)]
+
+    if hue_col is None:
+        if not no_hue:
+            hue_col = group_col
+    else:
+        assert not no_hue
+    
+    if hue_col is not None:
+        hue_val_count = df[hue_col].nunique()
+        if hue_val_count > max_hue_val_count:
+            raise RuntimeError(f'plotting {hue_val_count} hue values doesnt seem to make sense. change max_hue_val_count if you wish')
+
+    print(df[group_col].value_counts())
+
+    common_kwargs = dict(
+        data=df, 
+        x=group_col, 
+        y=col, 
+        dodge=False,
+        ax=ax,
+    )
+    # df = df.copy()
+    # df[hue_obs_column_name] = df[hue_obs_column_name].astype(str)
+    # print(df[hue_obs_column_name].unique())
+    if ordered_group_col_vals is not None:
+        common_kwargs['order'] = [x for x in ordered_group_col_vals if x in df[group_col].unique()]
+    else:
+        common_kwargs['order'] = df.groupby(group_col)[col].median().sort_values().index.tolist()
+    
+    df_for_krusk = df if (group_col_vals_to_exclude_from_krusk is None) else df[~df[group_col].isin(group_col_vals_to_exclude_from_krusk)]
+    df_for_krusk = df_for_krusk[df_for_krusk[group_col].isin(
+        (df_for_krusk[group_col].value_counts() >= min_group_size_for_krusk).loc[lambda x: x].index)]
+    if df_for_krusk[group_col].nunique() >= 2:
+        krusk_stat, krusk_pval = scipy.stats.kruskal(*df_for_krusk.groupby(group_col)[col].apply(list))
+        ax.set_title(f'krusk_pval={krusk_pval:.2e}')
+    
+    sb.stripplot(
+        jitter=0.25,
+        linewidth=0.5,
+        hue=hue_col, 
+        palette=palette,
+        legend='full',
+        **common_kwargs,
+        **stripplot_kwargs,
+    )
+    sb.boxplot(
+        # fliersize=3,
+        # flierprops=dict(alpha=0.5),
+        showfliers=False,
+        showbox=showbox,
+        showcaps=showcaps,
+        # meanprops={'visible': False},
+        medianprops={'visible': show_median},
+        boxprops={'facecolor':'none', 'edgecolor':'black'},
+        # medianprops={'color': 'k', 'ls': '-', 'lw': 1},
+        whiskerprops={'visible': show_whiskers},
+        # notch=True,
+        **common_kwargs,
+    )
+    if hue_col is not None:
+        if remove_legend:
+            ax.get_legend().remove()
+        else:
+            # ax.legend()
+            sb.move_legend(ax, 'upper left', bbox_to_anchor=(1, 1))
+    if rotate_x_tick_labels:
+        ax.set_xticklabels(
+            ax.get_xticklabels(),
+            rotation=45, ha='right', 
+            rotation_mode='anchor', 
+            # fontsize='small',
+        )
+    ax.set_xlabel(None)
+    fig.tight_layout()
+
+    return fig, ax
