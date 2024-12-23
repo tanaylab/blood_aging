@@ -3,7 +3,7 @@ These files produce the results shown in figure 4, focusing on applications of t
 
 Setup and run order (we used a CentOS Linux 7 machine):
 1. Download this repository into a location with at least 100G free storage space, e.g., using `git clone https://github.com/tanaylab/blood_aging.git`.
-2. Download required (large) files from our AWS bucket.
+2. Download required (large) files from our AWS bucket at https://blood-aging.s3.ap-south-1.amazonaws.com/.
 3. Create and activate a conda environment using `blood_aging/fig_4/blood_aging_conda_spec_file.txt`.
 4. `pip install -r blood_aging/fig_4/blood_aging_pip_requirements.txt`
 5. `cd blood_aging/fig_4` (i.e., fig_4 directory in the local copy of this repository)
