@@ -224,7 +224,7 @@ def plot_gate_c_state_scatterplots(c_ad, out_dir_path, scatter_name_to_info, pal
             top=0.8,
         )
         # fig.tight_layout()
-        fig.savefig(f'{out_dir_path}/EDF_9A_{scatter_name}.png', dpi=300)
+        fig.savefig(f'{out_dir_path}/EDF_7A_{scatter_name}.png', dpi=300)
         
         plt.close('all')
 
