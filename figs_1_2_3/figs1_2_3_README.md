@@ -2,7 +2,7 @@ Files in the directory produce the results shown in figures 1-3, focusing on cHS
 To reproduce the results, you should:
 - Download the code from this repository.
 - Download dependencies for the code: pheatmap, zoo, dplyr, metacell, openxlsx, tgstat, Matrix, anndata, umap, glmnet, RColorBrewer.
-- Download required (large) files from our AWS bucket.
+- Download required (large) files from our AWS bucket at https://blood-aging.s3.ap-south-1.amazonaws.com/.
 - Download required (small) files from this repository.
 - Edit `params.R` as follows:
   - set `MODEL.DIR` to the path in which the AWS files are located (they should all be in the same directory).
